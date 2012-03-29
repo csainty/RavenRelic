@@ -1,0 +1,29 @@
+{% assign requestCount = application.metrics['RavenDB/RequestCount'] %}
+{% assign sessionCount = application.metrics['RavenDB/SessionCount'] %}
+{% assign queries = application.metrics.find_by_regexp['RavenDB/Query/.*'] %}
+
+<table>
+  <thead>
+      <tr>
+         <th>Query</th>
+         <th>Hits</th>
+         <th>Hits/min</th>
+         <th>Avg. Resp.</th>
+         <th>Min / Max</th>        
+      </tr>
+  </thead>
+  <tbody>
+    {% for query in queries %}
+      <tr>
+        <td>{{ query.name }}</td>
+        <td>{{ query.call_count.value }}</td>
+        <td>{{ query.calls_per_minute.value }}</td>
+        <td>{{ query.average_response_time.value }}ms</td>
+        <td>{{ query.min_call_time.value }}ms / {{ query.max_call_time.value }}ms</td>
+      </tr>
+    {% endfor %}
+  <tbody>
+</table>
+
+{% line_chart value:count metric:requestCount title:'Requests/sec' %}
+{% line_chart value:count metric:sessionCount title:'Sessions/sec' %}
