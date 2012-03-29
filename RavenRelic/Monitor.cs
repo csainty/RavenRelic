@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Raven.Client.Connection;
 using Raven.Client.Connection.Profiling;
 using Raven.Client.Document;
@@ -31,7 +32,12 @@ namespace RavenRelic
         private static void EndRequest(object sender, RequestResultArgs e)
         {
             string queryName = e.Url.Split('?')[0];
-            NewRelic.Api.Agent.NewRelic.RecordResponseTimeMetric("RavenDB/Query/" + queryName, (long)e.DurationMilliseconds);
+            if (queryName.StartsWith("/databases", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Trim out the database prefix to the query
+                queryName = "/" + String.Join("/", queryName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Skip(2));
+            }
+            NewRelic.Api.Agent.NewRelic.RecordResponseTimeMetric("RavenDB/Query" + queryName, (long)e.DurationMilliseconds);
         }
 
         private static void AfterDispose(object sender, EventArgs e)

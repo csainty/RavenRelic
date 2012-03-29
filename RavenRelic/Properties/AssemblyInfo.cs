@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RavenRelic")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("NewRelic monitoring for RavenDB")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("RavenRelic")]
