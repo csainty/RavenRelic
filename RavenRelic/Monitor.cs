@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Raven.Abstractions.Connection;
+using Raven.Client;
 using Raven.Client.Connection;
 using Raven.Client.Connection.Profiling;
 using Raven.Client.Document;
@@ -8,9 +10,13 @@ namespace RavenRelic
 {
     public class Monitor
     {
-        public static void AttachTo(DocumentStore store)
+        public static void AttachTo(IDocumentStore store)
         {
-            store.SessionCreatedInternal += TrackSession;
+            var docStorebase = store as DocumentStoreBase;
+            if (docStorebase != null)
+            {
+                docStorebase.SessionCreatedInternal += TrackSession;
+            }
             store.AfterDispose += AfterDispose;
             if (store.JsonRequestFactory != null)
             {
